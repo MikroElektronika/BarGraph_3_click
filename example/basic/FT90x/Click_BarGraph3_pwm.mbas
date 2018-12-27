@@ -1,0 +1,31 @@
+module Click_BarGraph3_pwm
+
+include Click_BarGraph3_types
+sub function  bargraph3_pwmInit(dim freq as uint16_t) as uint32_t 
+sub procedure bargraph3_pwmSetDuty(dim duty as uint16_t) 
+sub procedure bargraph3_pwmStart() 
+sub procedure bargraph3_pwmStop() 
+
+implements
+
+sub function  bargraph3_pwmInit(dim freq as uint16_t) as uint32_t 
+dim
+    pwmPeriod as uint32_t 
+
+    pwmPeriod = PWM_Init(freq) 
+    result = pwmPeriod 
+end sub
+
+sub procedure bargraph3_pwmSetDuty(dim duty as uint16_t) 
+    PWM_ConfigChannel(duty, _PWM_INIT_STATE_1, _PWM_CHANNEL_0) 
+end sub
+
+sub procedure bargraph3_pwmStart() 
+    PWM_EnableOutput() 
+end sub
+
+sub procedure bargraph3_pwmStop() 
+    PWM_DisableOutput() 
+end sub
+
+end.

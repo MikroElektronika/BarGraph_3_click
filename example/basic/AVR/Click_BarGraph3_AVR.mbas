@@ -1,0 +1,64 @@
+'
+'Example for BarGraph3 Click
+'
+'    Date          : okt 2018.
+'    Author        : Katarina Perendic
+'
+'Test configuration AVR :
+'    
+'    MCU              : ATMEGA32
+'    Dev. Board       : EasyAVR v7 
+'    AVR Compiler ver : v7.0.1.0
+'
+'---
+'
+'Description :
+'
+'The application is composed of three sections :
+'
+'- System Initialization - Initializes SPI module and sets AN, RST, CS and PWM pin as OUTPUT
+'- Application Initialization - Initialization driver init, enable device and set PWM
+'- Application Task - (code snippet) - Counter passes through the loop and logs the value of the counter on the bargraph display
+'
+'
+program Click_BarGraph3_AVR
+
+include Click_BarGraph3_types
+include Click_BarGraph3_config
+include Click_BarGraph3_pwm
+sub procedure systemInit() 
+    mikrobus_gpioInit(_MIKROBUS1, _MIKROBUS_CS_PIN, _GPIO_OUTPUT) 
+    mikrobus_gpioInit(_MIKROBUS1, _MIKROBUS_RST_PIN, _GPIO_OUTPUT) 
+    mikrobus_gpioInit(_MIKROBUS1, _MIKROBUS_PWM_PIN, _GPIO_OUTPUT) 
+    mikrobus_gpioInit(_MIKROBUS1, _MIKROBUS_AN_PIN, _GPIO_OUTPUT) 
+    mikrobus_spiInit(_MIKROBUS1, @_BARGRAPH3_SPI_CFG[0]) 
+    Delay_100ms() 
+end sub
+
+sub procedure applicationInit() 
+    bargraph3_spiDriverInit(T_BARGRAPH3_P(@_MIKROBUS1_GPIO), T_BARGRAPH3_P(@_MIKROBUS1_SPI)) 
+    bargraph3_enable(_BARGRAPH3_DEVICE_ENABLE) 
+    bargraph3_pwmInit(100) 
+    bargraph3_pwmSetDuty(30000) 
+    bargraph3_pwmStart() 
+    Delay_100ms() 
+end sub
+
+sub procedure applicationTask() 
+dim
+    bargraph_cnt as uint8_t 
+
+    for bargraph_cnt = 0 to 5 
+        bargraph3_display(_BARGRAPH3_INCREASE_LED, _BARGRAPH3_DIRECTION_BOTTOM_TO_TOP, bargraph_cnt) 
+        Delay_1sec() 
+    next bargraph_cnt
+end sub
+
+main :
+
+    systemInit() 
+    applicationInit() 
+    while (1) 
+        applicationTask() 
+    wend
+end.

@@ -1,0 +1,35 @@
+unit Click_BarGraph3_pwm;
+
+uses Click_BarGraph3_types;
+
+function  bargraph3_pwmInit(freq : uint16_t) :  uint32_t; 
+procedure bargraph3_pwmSetDuty(duty : uint16_t); 
+procedure bargraph3_pwmStart(); 
+procedure bargraph3_pwmStop(); 
+
+implementation
+
+function  bargraph3_pwmInit(freq : uint16_t) :  uint32_t; 
+var
+    pwmPeriod : uint32_t; 
+begin
+    pwmPeriod := PWM_T0CCP0_Init(freq, @_GPIO_MODULE_T0CCP0_D0_AHB); 
+    result := pwmPeriod; 
+end;
+
+procedure bargraph3_pwmSetDuty(duty : uint16_t); 
+begin
+    PWM_T0CCP0_Set_Duty(duty, _PWM_INVERTED_DISABLE); 
+end;
+
+procedure bargraph3_pwmStart(); 
+begin
+    PWM_T0CCP0_Start(); 
+end;
+
+procedure bargraph3_pwmStop(); 
+begin
+    PWM_T0CCP0_Stop(); 
+end;
+
+end.
